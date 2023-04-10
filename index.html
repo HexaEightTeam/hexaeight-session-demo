@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HexaEight Authentication</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.jsdelivr.net/gh/hexaeightteam/session-js-spa-https/hexaeightsession.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f1f1f1;
+			margin: 0;
+			padding: 0;
+		}
+		.container {
+			max-width: 600px;
+			margin: 50px auto;
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+			text-align: center;
+		}
+		h1 {
+			font-size: 36px;
+			margin-bottom: 20px;
+		}
+		h2 {
+			font-size: 24px;
+			margin-bottom: 10px;
+		}
+		p {
+			font-size: 18px;
+			margin: 10px 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>HexaEight Authentication Example</h1>
+		<h2 id="appname"></h2>
+		<p id="greeting"></p>
+	</div>
+	<script>
+		function capitalizeFirstLetter(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
+
+		function callback() {
+			try {
+				var userstatus = session.isauthenticated();
+				userstatus.then(status => {
+					if (JSON.parse(status).data == "True") {
+						var app = session.Login('FETCH-APPNAME', "");
+						app.then(name => {
+							// Set the Application Name
+							document.querySelector("#appname").innerHTML = JSON.parse(name).data;
+						});
+						var user = session.Login('FETCH-LOGGED-IN-USER-EMAIL', "");
+						user.then(name => {
+							// Set the Application User Name
+							var email = JSON.parse(name).data.toString().split("@");
+							try {
+								document.querySelector("#greeting").innerHTML = "Welcome " + capitalizeFirstLetter(email[0]) + "! You are logged in to " + document.querySelector("#appname").innerHTML;
+							} catch {}
+						});
+
+					}
+				});
+
+			} catch {}
+		}
+
+		const session = new HexaEight();
+		$(document).ready(async function () {
+			const clientid = "9EC2B0C4E9C93EF616435FCBC5F14C6296F2FFA2";
+			const tokenserverurl = "https://authz.mydomain.com:5000";
+			const state = await session.init(clientid, tokenserverurl, callback);
+		});
+	</script>
+</body>
+</html>
