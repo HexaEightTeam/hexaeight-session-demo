@@ -4,8 +4,8 @@
 	<title>HexaEight Authentication</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="http://cdn.jsdelivr.net/gh/hexaeightteam/session-js-spa-https/hexaeightsession.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/hexaeightteam/session-js-spa-https/hexaeightsession.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 	<style>
 		body {
 			font-family: Arial, sans-serif;
@@ -74,8 +74,8 @@
 
 		const session = new HexaEight();
 		$(document).ready(async function () {
-			const clientid = "BB798B90C003A86D8D33FDCD12C9CAA208C7D437";
-			const tokenserverurl = "http://demoauth.hexaeight.com:5000";
+			const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
+			const tokenserverurl = "https://auth2.hexaeight.com:2083";
 			const state = await session.init(clientid, tokenserverurl, callback);
 		});
 	</script>
