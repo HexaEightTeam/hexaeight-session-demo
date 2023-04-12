@@ -49,8 +49,10 @@
 
 		function callback() {
 			try {
+				console.log(session);
 				var userstatus = session.isauthenticated();
 				userstatus.then(status => {
+					console.log(status);
 					if (JSON.parse(status).data == "True") {
 						var app = session.Login('FETCH-APPNAME', "");
 						app.then(name => {
