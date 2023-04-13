@@ -47,7 +47,7 @@
 			return string.charAt(0).toUpperCase() + string.slice(1);
 		}
 
-		function callback() {
+		window.callback = function() {
 			try {
 				console.log(session);
 				var userstatus = session.isauthenticated();
@@ -78,7 +78,7 @@
 		$(document).ready(async function () {
 			const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 			const tokenserverurl = "https://auth2.hexaeight.com:2083";
-			const state = await session.init(clientid, tokenserverurl, callback);
+			const state = await session.init(clientid, tokenserverurl, window.parent.callback);
 		});
 	</script>
 </body>
