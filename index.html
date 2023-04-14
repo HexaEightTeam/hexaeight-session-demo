@@ -81,6 +81,9 @@
 			const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 			const tokenserverurl = "https://auth2.hexaeight.com:2083";
 			const state = await session.init(clientid, tokenserverurl, callback);
+			state.then(sessionresp => { 
+				console.log(sessionresp);
+			});
 		});
 	</script>
 </body>
