@@ -71,12 +71,32 @@
 				});
 			} catch {}
 		}			
-			
+
+		function checksession() {
+	   		const sessionstate = session.ready();
+			sessionstate.then(resp => {
+				console.log(resp);
+				try {
+					if (resp != "Ok") {
+						setTimeout(function () {
+        						checksession();
+    						}, 1000);
+					} else {
+						session.init(clientid, tokenserverurl, callback);			
+					}	
+				}
+				catch {
+					setTimeout(function () {
+        					checksession();
+    					}, 1000);
+				}
+			});
+		}
+		
 		const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 		const tokenserverurl = "https://auth2.hexaeight.com:2083";
 		session.init(clientid, tokenserverurl, callback);
-		const sessionstate = session.ready();
-		console.log(sessionstate);
+		checksession();
 	</script>
 </body>
 </html>
