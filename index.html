@@ -77,12 +77,22 @@
 			sessionstate.then(resp => {
 				console.log(resp);
 				try {
-					if (resp != "Ok") {
-						setTimeout(function () {
-        						checksession();
-    						}, 1000);
+					if (resp === "fulfilled") {
+						const isuserloggedin = session.isauthenticated();
+						isuserloggedin.then(resp2 => {
+							console.log(resp2);
+							if (resp2 === 'Ok') {
+								session.init(clientid, tokenserverurl, callback);					
+							} else {
+								setTimeout(function () {
+        								checksession();
+    								}, 1000);
+							}
+						});
 					} else {
-						session.init(clientid, tokenserverurl, callback);			
+						setTimeout(function () {
+							checksession();
+   						}, 1000);
 					}	
 				}
 				catch {
@@ -95,7 +105,7 @@
 		
 		const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 		const tokenserverurl = "https://auth2.hexaeight.com:2083";
-		session.init(clientid, tokenserverurl, callback);
+		session.init(clientid, tokenserverurl, null);
 		checksession();
 	</script>
 </body>
