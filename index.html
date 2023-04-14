@@ -43,42 +43,44 @@
 		<p id="greeting"></p>
 	</div>
 	<script>
-		function capitalizeFirstLetter(string) {
-			return string.charAt(0).toUpperCase() + string.slice(1);
-		}
 
-		window.callback = function() {
-			try {
-				console.log(session);
-				var userstatus = session.isauthenticated();
-				userstatus.then(status => {
-					console.log(status);
-					if (JSON.parse(status).data == "True") {
-						var app = session.Login('FETCH-APPNAME', "");
-						app.then(name => {
-							// Set the Application Name
-							document.querySelector("#appname").innerHTML = JSON.parse(name).data;
-						});
-						var user = session.Login('FETCH-LOGGED-IN-USER-EMAIL', "");
-						user.then(name => {
-							// Set the Application User Name
-							var email = JSON.parse(name).data.toString().split("@");
-							try {
-								document.querySelector("#greeting").innerHTML = "Welcome " + capitalizeFirstLetter(email[0]) + "! You are logged in to " + document.querySelector("#appname").innerHTML;
-							} catch {}
-						});
-
-					}
-				});
-
-			} catch {}
-		}
 
 		const session = new HexaEight();
 		$(document).ready(async function () {
+			function capitalizeFirstLetter(string) {
+				return string.charAt(0).toUpperCase() + string.slice(1);
+			}
+
+			function callback() {
+				try {
+					console.log(session);
+					var userstatus = session.isauthenticated();
+					userstatus.then(status => {
+						console.log(status);
+						if (JSON.parse(status).data == "True") {
+							var app = session.Login('FETCH-APPNAME', "");
+							app.then(name => {
+								// Set the Application Name
+								document.querySelector("#appname").innerHTML = JSON.parse(name).data;
+							});
+							var user = session.Login('FETCH-LOGGED-IN-USER-EMAIL', "");
+							user.then(name => {
+								// Set the Application User Name
+								var email = JSON.parse(name).data.toString().split("@");
+								try {
+									document.querySelector("#greeting").innerHTML = "Welcome " + capitalizeFirstLetter(email[0]) + "! You are logged in to " + document.querySelector("#appname").innerHTML;
+								} catch {}
+							});
+		
+						}
+					});
+
+				} catch {}
+			}			
+			
 			const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 			const tokenserverurl = "https://auth2.hexaeight.com:2083";
-			const state = await session.init(clientid, tokenserverurl, window.parent.callback);
+			const state = await session.init(clientid, tokenserverurl, callback);
 		});
 	</script>
 </body>
