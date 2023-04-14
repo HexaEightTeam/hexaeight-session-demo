@@ -103,6 +103,7 @@
 		
 		const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 		const tokenserverurl = "https://auth2.hexaeight.com:2083";
+		document.querySelector("#greeting").innerHTML = "Checking If User is Logged In. Please Wait.."
 		// Passing null as thrid parameter since the callback function does not seem to execute on some browsers
 		session.init(clientid, tokenserverurl, null);
 		// Post authentication, we can invoke the same init function by passing the callback inside checksession function
