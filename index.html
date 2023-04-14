@@ -81,7 +81,7 @@
 						const isuserloggedin = session.isauthenticated();
 						isuserloggedin.then(resp2 => {
 							console.log(resp2);
-							if (resp2 === 'Ok') {
+							if (JSON.parse(resp2).data == "True") {
 								session.init(clientid, tokenserverurl, callback);					
 							} else {
 								setTimeout(function () {
