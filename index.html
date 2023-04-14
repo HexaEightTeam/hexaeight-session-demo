@@ -61,10 +61,10 @@
 						});
 						var user = session.Login('FETCH-LOGGED-IN-USER-EMAIL', "");
 						user.then(name => {
-							// Set the Application User Name
+							// Set the User Name
 							var email = JSON.parse(name).data.toString().split("@");
 							try {
-								document.querySelector("#greeting").innerHTML = "Welcome " + capitalizeFirstLetter(email[0]) + "! You are logged in to " + document.querySelector("#appname").innerHTML;
+								document.querySelector("#greeting").innerHTML = "Welcome " + capitalizeFirstLetter(email[0]) + "! You are logged in";
 							} catch {}
 						});
 					}
@@ -75,12 +75,10 @@
 		function checksession() {
 	   		const sessionstate = session.ready();
 			sessionstate.then(resp => {
-				console.log(resp);
 				try {
 					if (resp === "fulfilled") {
 						const isuserloggedin = session.isauthenticated();
 						isuserloggedin.then(resp2 => {
-							console.log(resp2);
 							if (JSON.parse(resp2).data == "True") {
 								session.init(clientid, tokenserverurl, callback);					
 							} else {
@@ -105,7 +103,9 @@
 		
 		const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 		const tokenserverurl = "https://auth2.hexaeight.com:2083";
+		// Passing null as thrid parameter since the callback function does not seem to execute on some browsers
 		session.init(clientid, tokenserverurl, null);
+		// Post authentication, we can invoke the same init function by passing the callback inside checksession function
 		checksession();
 	</script>
 </body>
