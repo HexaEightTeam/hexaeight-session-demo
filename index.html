@@ -49,10 +49,8 @@
 
 		function callback() {
 			try {
-				console.log(session);
 				var userstatus = session.isauthenticated();
 				userstatus.then(status => {
-					console.log(status);
 					if (JSON.parse(status).data == "True") {
 						var app = session.Login('FETCH-APPNAME', "");
 						app.then(name => {
@@ -104,9 +102,9 @@
 		const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 		const tokenserverurl = "https://auth2.hexaeight.com:2083";
 		document.querySelector("#greeting").innerHTML = "Checking If User is Logged In. Please Wait.."
-		// Passing null as thrid parameter since the callback function does not seem to execute on some browsers
+		// Passing null as thrid parameter since the callback function does not seem to execute on some browsers before user completes authentication process
 		session.init(clientid, tokenserverurl, null);
-		// Post authentication, we can invoke the same init function by passing the callback inside checksession function
+		// Post authentication, we can invoke the same init function by passing the callback inside checksession function to set the application name and username
 		checksession();
 	</script>
 </body>
