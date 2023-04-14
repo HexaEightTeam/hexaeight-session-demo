@@ -46,6 +46,7 @@
 
 
 		const session = new HexaEight();
+		let state;
 		$(document).ready(async function () {
 			function capitalizeFirstLetter(string) {
 				return string.charAt(0).toUpperCase() + string.slice(1);
@@ -80,7 +81,7 @@
 			
 			const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
 			const tokenserverurl = "https://auth2.hexaeight.com:2083";
-			const state = await session.init(clientid, tokenserverurl, callback);
+			state = await session.init(clientid, tokenserverurl, callback);
 			state.then(sessionresp => { 
 				console.log(sessionresp);
 			});
