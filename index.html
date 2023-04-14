@@ -82,7 +82,7 @@
 			const tokenserverurl = "https://auth2.hexaeight.com:2083";
 			const sessionresp = session.init(clientid, tokenserverurl, callback);
 			console.log(sessionresp);
-			sessionresp.then(function(resp) {
+			sessionresp().then(function(resp) {
 				console.log(resp);
 			});
 		});
