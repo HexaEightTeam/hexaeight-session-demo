@@ -33,6 +33,37 @@
 			font-size: 18px;
 			margin: 10px 0;
 		}
+				textarea {
+			margin: 10px auto;
+			width: 100%;
+			height: 100px;
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			resize: vertical;
+			font-size: 16px;
+		}
+		input {
+			margin: 10px auto;
+			width: 100%;
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			font-size: 16px;
+		}
+		button {
+			margin: 10px 5px;
+			padding: 10px 20px;
+			border-radius: 5px;
+			border: none;
+			background-color: #4CAF50;
+			color: #fff;
+			font-size: 16px;
+			cursor: pointer;
+		}
+		button:hover {
+			background-color: #3e8e41;
+		}
 	</style>
 </head>
 <body>
@@ -40,9 +71,28 @@
 		<h1>HexaEight Authentication Example</h1>
 		<h2 id="appname"></h2>
 		<p id="greeting"></p>
+		
+		<div>
+			<div class="mbr-section align-center">
+				<h2><strong>Encrypt and Decrypt Messages</strong></h2>
+				<br>
+				<input id="destination" placeholder="Destination Email Address Or Resource Name  : (Required Only For Encryption)">
+				<textarea id="messageinput" placeholder="Enter a message to encrypt Or Paste The Encrypted Message"></textarea>
+				<div class="mbr-section-btn align-center">
+					<br>
+					<button id="encryptbutton" type="button">ENCRYPT MESSAGE</button>
+					<button id="decryptbutton" type="button">DECRYPT MESSAGE</button>
+					<br>    
+				</div>
+				<textarea id="messageoutput" placeholder="Encrypted And Decrypted Output Area"></textarea>
+			</div>
+		</div>
 	</div>
 	<script defer async>
 		const session = new HexaEight();
+		const encryptBtn = document.querySelector("#encryptbutton");
+		const decryptBtn = document.querySelector("#decryptbutton");
+
 		function capitalizeFirstLetter(string) {
 			return string.charAt(0).toUpperCase() + string.slice(1);
 		}
@@ -63,6 +113,19 @@
 							var email = JSON.parse(name).data.toString().split("@");
 							try {
 								document.querySelector("#greeting").innerHTML = "Welcome " + capitalizeFirstLetter(email[0]) + "! You are logged in";
+							
+								encryptBtn.addEventListener("click", async function() {
+									const message = document.querySelector("#messageinput").value;
+									const recipient = document.querySelector("#destination").value;
+									const encryptedMessage = await session.EncryptTextMessage(recipient,message);
+									document.querySelector("#messageoutput").value = encryptedMessage;
+								});
+
+								decryptBtn.addEventListener("click", async function() {
+									const encryptedMessage = document.querySelector("#messageinput").value;
+									const decryptedMessage = await session.DecryptTextMessage(encryptedMessage);
+									document.querySelector("#messageoutput").value = decryptedMessage;
+								});
 							} catch {}
 						});
 					}
