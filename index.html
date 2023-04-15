@@ -87,11 +87,28 @@
 				<textarea id="messageoutput" placeholder="Encrypted And Decrypted Output Area"></textarea>
 			</div>
 		</div>
+		<div>
+    			<div class="mbr-section align-center">
+        			<h2><strong>Protect and Decipher Data</strong></h2>
+        			<br>
+        			<input id="datakey" placeholder="Enter a Key to Store your Data message. You will need to remember this key to retrieve your message.">
+         			<textarea id="datainput" placeholder="Enter any data you want to Protect. This data will only be stored locally on this browser."></textarea>
+        			<div class="mbr-section-btn align-center">
+        			<br>
+        			<button id="protectbutton" type="button" class="btn btn-primary">PROTECT DATA</button>
+			        <button id="decipherbutton" type="button" class="btn btn-success">RETIEVE AND DECIPHER DATA</button>
+        		<br>    
+	    		</div>
+    			<textarea id="dataoutput" placeholder="Output Area"></textarea>
+		</div>
 	</div>
 	<script defer async>
 		const session = new HexaEight();
 		const encryptBtn = document.querySelector("#encryptbutton");
 		const decryptBtn = document.querySelector("#decryptbutton");
+		const protectBtn = document.querySelector("#protectbutton");
+		const decipherBtn = document.querySelector("#decipherbutton");
+
 
 		function capitalizeFirstLetter(string) {
 			return string.charAt(0).toUpperCase() + string.slice(1);
@@ -125,6 +142,32 @@
 									const encryptedMessage = document.querySelector("#messageinput").value;
 									const decryptedMessage = await session.DecryptTextMessage(encryptedMessage);
 									try { document.querySelector("#messageoutput").value = JSON.parse(decryptedMessage).BODY.split(' :')[1]; } catch {  document.querySelector("#messageoutput").value = decryptedMessage }
+								});
+								
+
+								protectBtn.addEventListener("click", async function() {
+									const datainput = document.querySelector("#datainput").value;
+									const datakey = document.querySelector("#datakey").value;
+									const protectedMessage = await session.ProtectMessage(datainput);
+									try {
+										window.localStorage.setItem(datakey, protectedMessage);	
+										document.querySelector("#dataoutput").value = "Encrypted Message For Reference Stored Locally (Use can use the key identifier to retrieve the same message either in this session or subseqent sessions) : " + protectedMessage ;
+									} catch {
+										document.querySelector("#dataoutput").value = "Unable to Store this Data message. Use a different key identifier";
+									}
+								});
+
+								decipherBtn.addEventListener("click", async function() {
+									const datakey = document.querySelector("#datakey").value;
+									try {
+										const storedmessage = window.localStorage.getItem(datakey);
+										const decipheredoutput = await session.DecipherMessage(storedmessage);
+										const body = JSON.parse(decipheredoutput).BODY;
+										document.querySelector("#dataoutput").value = "Retrived Data Message : " + body  ;
+									} catch {
+										document.querySelector("#dataoutput").value = "Unable to Retrive Data related to your key. Try With a different Key";
+									}
+
 								});
 							} catch {}
 						});
