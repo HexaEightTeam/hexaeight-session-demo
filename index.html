@@ -124,7 +124,7 @@
 								decryptBtn.addEventListener("click", async function() {
 									const encryptedMessage = document.querySelector("#messageinput").value;
 									const decryptedMessage = await session.DecryptTextMessage(encryptedMessage);
-									document.querySelector("#messageoutput").value = decryptedMessage;
+									try { document.querySelector("#messageoutput").value = decryptedMessage.split(' :')[1]); } catch {  document.querySelector("#messageoutput").value = decryptedMessage }
 								});
 							} catch {}
 						});
