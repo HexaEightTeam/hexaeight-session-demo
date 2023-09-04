@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>WhatsApp Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .chat-container {
+            max-width: response;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .message-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .message {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 40%;
+            position: relative;
+        }
+        .user-message {
+            color: #ffffff;
+            background-color: #007aff;
+            align-self: flex-start;
+            clear: both;
+            margin-left: 0;
+        }
+        .bot-message {
+            color: #ffffff;
+            background-color: #4caf50;
+            align-self: flex-end;
+            clear: both;
+            margin-left: auto;
+        }
+        .timestamp {
+            font-size: 12px;
+            text-align: right;
+            margin-top: 5px;
+            color: #ffffff; /* User message timestamp color */
+        }
+        .timestamp-bot {
+            font-size: 12px;
+            text-align: right;
+            margin-top: 5px;
+            color: #ffffff; /* Bot message timestamp color */
+        }
+        .message-header {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #ffffff;
+	    text-align: left;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .input-caption {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        #message-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            overflow: hidden;
+            flex-grow: 1;
+            max-height: 9em;
+        }
+        #send-button {
+            background-color: #007aff;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            text-align: center;
+            font-size: 20px;
+        }
+        .request-pending {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        /* Add word-wrap property to message text */
+        .message-text {
+            word-wrap: break-word;
+            white-space: pre-line;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: #007aff;
+            color: #ffffff;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1;
+            
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+.header {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    color: #007aff;
+    padding: 10px 0;
+    text-align: center;
+    z-index: 1;
+    display: flex-row;
+    align-items: center;
+    justify-content: space-between; /* Add this line */
+    border-radius: 0 0 30px 30px;
+
+}
+
+
+.header-logo {
+    width: 100px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Add some spacing between logo and text */
+}
+
+.header-button {
+    background: none;
+    border: none;
+    color: #007aff;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.header-button:focus {
+    outline: none;
+}
+
+.header-button:hover {
+    color: #ffdb58; /* Change color on hover */
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <img src="SmallLogoBW.jpg" alt="HexaEight" class="header-logo">
+    <h1>Dashboard Application</h1>
+</div>
+    <div class="chat-container">
+        <div class="message-container" id="message-container">
+            <!-- Messages will be displayed here -->
+        </div>
+        <div class="input-container">
+            <div class="input-wrapper">
+		<button id="settings-button" class="header-button"><i class="fas fa-cog"></i></button>
+                <textarea id="message-input" placeholder="Type a message"></textarea>
+                <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+<div id="data" class="chat-container collapsible">
+    <div class="header">
+        <h1>User Data</h1>
+    </div>
+    <div id="data-detail">
+    </div>
+</div>
+
+<script src="hexaeightsession.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pouchdb/8.0.1/pouchdb.js" integrity="sha512-OkX0TUkg3svq4MQanofAy2X0j+bE4TwtIlm2C4wvFVgnx8tSnsNudLeVoNVqkJI5hWitSGONirMdU0NP18vSKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+        // Initialize PouchDB for message storage
+        function initPouchDB(userUniqueId) {
+            return new PouchDB(`user_${userUniqueId}`);
+        }
+
+        // Initialize the chat for a user
+        function initChat(userUniqueId) {
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const messageContainer = document.getElementById('message-container');
+            const db = initPouchDB(userUniqueId);
+
+            function toggleData() {
+                isDataCollapsed = !isDataCollapsed;
+                dataDiv.classList.toggle('collapsed', isDataCollapsed);
+                toggleDataButton.innerHTML = isDataCollapsed ? '<i class="fas fa-chevron-down"></i>' : '<i class="fas fa-chevron-up"></i>';
+            }
+
+ 
+            sendButton.addEventListener('click', () => {
+                const messageText = messageInput.value;
+                if (messageText.trim() !== '') {
+                    appendUserMessage(messageText);
+                    saveMessage(messageText);
+                    messageInput.value = '';
+                }
+            });
+
+            messageInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    messageInput.value += '\n';
+                }
+            });
+
+            function appendUserMessage(text) {
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user-message';
+                userMessage.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-header">YOU</div>
+                        <div class="message-text">
+                            ${text}
+                        </div>
+                        <div class="timestamp">${getCurrentTime()}</div>
+                    </div>
+                `;
+                messageContainer.appendChild(userMessage);
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }
+
+            function appendBotMessage(text) {
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot-message';
+                botMessage.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-header">AI</div>
+                        <div class="message-text">
+                            ${text}
+                        </div>
+                        <div class="timestamp-bot">${getCurrentTime()}</div>
+                    </div>
+                `;
+                messageContainer.appendChild(botMessage);
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }
+
+            function saveMessage(text) {
+                const messageId = Date.now().toString(); // Unique message ID
+                const message = {
+                    _id: messageId, // Ensure a unique ID for each message
+                    type: 'user',
+                    text,
+                    timestamp: Date.now(),
+                };
+                db.put(message).then(() => {
+                    // Message saved successfully
+                    simulateBotResponse();
+                }).catch((error) => {
+                    console.error('Error saving message:', error);
+                });
+            }
+
+            function getCurrentTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+
+            function simulateBotResponse() {
+                const botResponses = [
+                    "That's great!",
+                    "I'm just a bot, but I'm here to help!",
+                    "How can I assist you today?",
+                    "Sorry, I didn't get that. Could you please rephrase?",
+                ];
+                const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+                appendBotMessage(randomResponse);
+                const botMessage = {
+                    _id: Date.now().toString(), // Unique message ID
+                    type: 'bot',
+                    text: randomResponse,
+                    timestamp: Date.now(),
+                };
+                db.put(botMessage).catch((error) => {
+                    console.error('Error saving bot message:', error);
+                });
+            }
+
+            // Load and display previous messages
+            function loadMessages() {
+                db.allDocs({ include_docs: true, descending: true })
+                    .then((result) => {
+                        result.rows.forEach((row) => {
+                            const message = row.doc;
+                            if (message.type === 'user') {
+                                appendUserMessage(message.text);
+                            } else if (message.type === 'bot') {
+                                appendBotMessage(message.text);
+                            }
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error loading messages:', error);
+                    });
+            }
+
+
+
+            // Initialize the chat by loading previous messages
+            loadMessages();
+
+
+        }
+
+        // Initialize the chat for a specific user (change 'user1' to the desired unique ID)
+        initChat('user1');
+
+    </script>
+	<script defer async>
+		const session = new HexaEight();
+		const encryptBtn = document.querySelector("#encryptbutton");
+		const decryptBtn = document.querySelector("#decryptbutton");
+		const protectBtn = document.querySelector("#protectbutton");
+		const decipherBtn = document.querySelector("#decipherbutton");
+
+
+		function capitalizeFirstLetter(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
+
+		function callback() {
+			try {
+				var userstatus = session.isauthenticated();
+				userstatus.then(status => {
+					if (JSON.parse(status).data == "True") {
+						var app = session.Login('FETCH-APPNAME', "");
+						app.then(name => {
+							// Set the Application Name
+							document.querySelector("#appname").innerHTML = JSON.parse(name).data;
+						});
+						var user = session.Login('FETCH-LOGGED-IN-USER-EMAIL', "");
+						user.then(name => {
+							// Set the User Name
+							var email = JSON.parse(name).data.toString().split("@");
+							try {
+								document.querySelector("#greeting").innerHTML = "Welcome " + capitalizeFirstLetter(email[0]) + "! You are logged in";
+							
+								encryptBtn.addEventListener("click", async function() {
+									const message = document.querySelector("#messageinput").value;
+									const recipient = document.querySelector("#destination").value;
+									const encryptedMessage = await session.EncryptTextMessage(recipient,message);
+									document.querySelector("#messageoutput").value = encryptedMessage;
+								});
+
+								decryptBtn.addEventListener("click", async function() {
+									const encryptedMessage = document.querySelector("#messageinput").value;
+									const decryptedMessage = await session.DecryptTextMessage(encryptedMessage);
+									try { document.querySelector("#messageoutput").value = JSON.parse(decryptedMessage).BODY.split(' :')[1]; } catch {  document.querySelector("#messageoutput").value = decryptedMessage }
+								});
+								
+
+								protectBtn.addEventListener("click", async function() {
+									const datainput = document.querySelector("#datainput").value;
+									const datakey = document.querySelector("#datakey").value;
+									const protectedMessage = await session.ProtectMessage(datainput);
+									try {
+										window.localStorage.setItem(datakey, protectedMessage);	
+										document.querySelector("#dataoutput").value = "Encrypted Message For Reference Stored Locally (Use can use the key identifier to retrieve the same message either in this session or subseqent sessions) : " + protectedMessage ;
+									} catch {
+										document.querySelector("#dataoutput").value = "Unable to Store this Data message. Use a different key identifier";
+									}
+								});
+
+								decipherBtn.addEventListener("click", async function() {
+									const datakey = document.querySelector("#datakey").value;
+									try {
+										const storedmessage = window.localStorage.getItem(datakey);
+										const decipheredoutput = await session.DecipherMessage(storedmessage);
+										const body = JSON.parse(decipheredoutput).BODY;
+										document.querySelector("#dataoutput").value = "Retrived Data Message : " + body  ;
+									} catch {
+										document.querySelector("#dataoutput").value = "Unable to Retrive Data related to your key. Try With a different Key";
+									}
+
+								});
+							} catch {}
+						});
+					}
+				});
+			} catch {}
+		}			
+
+		function checksession() {
+	   		const sessionstate = session.ready();
+			sessionstate.then(resp => {
+				try {
+					if (resp === "fulfilled") {
+						const isuserloggedin = session.isauthenticated();
+						isuserloggedin.then(resp2 => {
+							if (JSON.parse(resp2).data == "True") {
+								session.init(clientid, tokenserverurl, callback);					
+							} else {
+								setTimeout(function () {
+        								checksession();
+    								}, 1000);
+							}
+						});
+					} else {
+						setTimeout(function () {
+							checksession();
+   						}, 1000);
+					}	
+				}
+				catch {
+					setTimeout(function () {
+        					checksession();
+    					}, 1000);
+				}
+			});
+		}
+		
+		const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
+		const tokenserverurl = "https://auth2.hexaeight.com:2083";
+		session.init(clientid, tokenserverurl, null);
+		checksession();
+	</script>
+</body>
+</html>
