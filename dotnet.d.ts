@@ -35,6 +35,10 @@ export declare const createObjectReference: (object: any) => any;
 export declare const disposeObjectReference: (objectReference: any) => void;
 export declare const createStreamReference: (buffer: Uint8Array | any) => any;
 export namespace HexaEight {
+    export function GetStatus(): Promise<boolean>;
+    export function ValidatePK(instanceid: string, pkey: string, entropy: string, existingkey: string): Promise<string>;
+    export function PreInitialize(userid: string, EntropyCode: string, EntropyData: string): Promise<boolean>;
+    export function FetchEntropyCode(): Promise<boolean>;
     export function Login(userid: string, logintype: string, data: string): Promise<string>;
     export function Logout(userid: string): Promise<string>;
     export function CompleteLoginProcessDirect(userid: string): Promise<string>;
@@ -76,22 +80,13 @@ export namespace HexaEight {
     export function GetCaptchaCodeMobileURL(userid: string): string;
     export function GetLanguageText(text: string, lang: string): Promise<string>;
     export function GetActiveAssistant(text: string, lang: string): Promise<string>;
-    export function GCount(): Promise<string>;
-    export function GetVectorSize(): Promise<string>;
-    export function Rebuild(size: string): Promise<string>;
     export function AddConversation(userid: string, ts: string, question: string, answer: string): Promise<string>;
-    export function Result1(userid: string, question: string): Promise<string>;
-    export function Result2(userid: string, question: string): Promise<string>;
-    export function Result2C(userid: string, question: string): Promise<string>;
-    export function Result3(userid: string, question: string): Promise<string>;
-    export function Result4(userid: string, question: string): Promise<string>;
-    export function Result4C(userid: string, question: string): Promise<string>;
     export function EnableDeepSearchForAIContext(): Promise<boolean>;
     export function DisableDeepSearchForAIContext(): Promise<boolean>;
-    export function SetMaxSearchTokens(tokenCount: number): Promise<boolean>;
     export function SetTopParametersForAIContext(topX: number, topA: number): Promise<boolean>;
     export function SetContextSimilarityScore(Score: number): Promise<boolean>;
     export function SetContextSearchScore(Score: number): Promise<boolean>;
+    export function GetTokenCount(userid: string, question: string): Promise<string>;
     export function GetContext(userid: string, question: string): Promise<string>;
     export function EngageAI(userid: string, question: string): Promise<string>;
 }
