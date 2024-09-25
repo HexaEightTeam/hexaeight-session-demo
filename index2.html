@@ -6,45 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="chatui.css"> <!-- Assuming you have this CSS file -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f1f1f1;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-        h1, h2 {
-            margin-bottom: 20px;
-        }
-        textarea, input {
-            width: 100%;
-            margin: 10px auto;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-        button {
-            margin: 10px 5px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #4CAF50;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #3e8e41;
-        }
+        /* Your CSS styles here */
     </style>
 </head>
 <body>
@@ -62,7 +24,7 @@
                 <textarea id="messageinput" placeholder="Type your message..."></textarea>
                 <div class="button-container">
                     <button id="talkButton">Talk</button>
-                    <button id="sendButton" onclick="sendMessage()">Send</button>
+                    <button id="sendButton">Send</button> <!-- Removed the onclick attribute here -->
                 </div>
                 <div class="button-container">
                     <button id="muteButton">Mute</button>
@@ -99,6 +61,9 @@
             });
             let preferredLanguage = "en-US";
             HexaEightChat.setPreferredLanguage(preferredLanguage, document.getElementById('languageDropdown'));
+
+            // Add event listener for the send button
+            document.getElementById("sendButton").addEventListener("click", sendMessage);
         }
 
         async function sendMessage() {
