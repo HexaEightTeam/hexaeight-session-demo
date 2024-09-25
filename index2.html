@@ -32,6 +32,7 @@
         const preferredLanguage = "en-US"; // Set your preferred language
 
         const chatWidget = new ChatWidget(clientId, tokenServerUrl, preferredLanguage);
+        await chatWidget.initialize();
 
         document.getElementById('openChatButton').onclick = async () => {
             await chatWidget.initialize();
