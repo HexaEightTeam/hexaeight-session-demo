@@ -20,7 +20,7 @@
         const muteButtonID = "muteButton";
 
         async function initializeSession() {
-            await session.init(clientid, tokenserverurl, "userEngagementContainerDIV");
+            await session.init(clientid, tokenserverurl, "hexaeight-user-container");
             const initialized = await session.ready();
             console.log("Session is initialized: " + initialized);
 
@@ -138,7 +138,7 @@
 </head>
 
 <body>
-    <div id="userEngagementContainerDIV" class="user-container"></div>
+    <div id="hexaeight-user-container" class="user-container"></div>
 
     <div id="chatContainerDivID" class="chat-container">
         <div id="message-container"></div>
