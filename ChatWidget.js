@@ -141,6 +141,13 @@ class ChatWidget {
         // Ensure the modal is created before calling populateLanguageDropdown
         this.createModal();
 
+        // Initialize HexaEightChat
+        HexaEightChat.init({
+            chatContainerId: "chatContainerDivID",
+            session: this.session,
+            messageCallback: this.handleMessage.bind(this),
+        });
+
         const languageDropdown = document.getElementById("languageDropdown");
         HexaEightChat.populateLanguageDropdown(
             languageDropdown,
