@@ -15,6 +15,8 @@ class ChatWidget {
         this.modal.innerHTML = `
             <div class="modal-content">
                 <span class="close-button">&times;</span>
+                <!-- Ensure the element with id "hexaeight-user-container" exists in the modal -->
+                <div id="hexaeight-user-container" class="user-container"></div>
                 <div id="chatContainerDivID" class="chat-container">
                     <div id="message-container"></div>
                     <div class="input-container">
@@ -167,7 +169,6 @@ class ChatWidget {
     }
 
     handleMessage(request, message) {
-        // Handle incoming messages
         this.session.DecipherMessage(request).then(req => {
             if (JSON.parse(req).BODY === "RENDER") {
                 const codeToExecute = JSON.parse(this.session.DecipherMessage(message)).BODY;
