@@ -13,6 +13,11 @@
         const session = new HexaEight();
         const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04"; // Replace with your actual client ID
         const tokenserverurl = "https://auth2.hexaeight.com:2083"; // Replace with your actual token server URL
+        const preferredLanguage = "en-US"; // Set your preferred language
+        const languageDropdown = document.getElementById("languageDropdown");
+        const talkButtonID = "talkButton";
+        const speakButtonID = "speakerButton";
+        const muteButtonID = "muteButton";
 
         async function initializeSession() {
             await session.init(clientid, tokenserverurl, "userEngagementContainerDIV");
@@ -38,8 +43,16 @@
                 },
             });
 
-            const preferredLanguage = "en-US"; // Set your preferred language
-            HexaEightChat.setPreferredLanguage(preferredLanguage, document.getElementById('languageDropdown'));
+            // Populate the language dropdown
+            HexaEightChat.populateLanguageDropdown(
+                languageDropdown,
+                talkButtonID,
+                speakButtonID,
+                muteButtonID
+            );
+
+            // Set preferred language
+            HexaEightChat.setPreferredLanguage(preferredLanguage, languageDropdown);
         }
 
         // Expose sendMessage globally
@@ -55,102 +68,95 @@
         // Initialize session on load
         window.onload = initializeSession;
     </script>
-     <style>
-    /* Add your styles here */
-    body {
-        font-family: 'Lato', sans-serif;
-        background-color: #f2f2f2;
-        margin: 0;
-        padding: 0;
-    }
+    <style>
+        /* Add your styles here */
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* Chat and container styles */
-    .chat-container, .user-container {
-        margin: 20px auto;
-        padding: 20px;
-        max-width: 100%;
-        height: 70vh;
-        overflow: hidden;
-    }
+        /* Chat and container styles */
+        .chat-container, .user-container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 100%;
+            height: 70vh;
+            overflow: hidden;
+        }
 
-    .message-container {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 10px;
-    }
+        .message-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
 
-    .message {
-        margin: 10px;
-        padding: 10px;
-        border-radius: 10px;
-        max-width: 70%;
-    }
+        .message {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
 
-    .user-message {
-        background-color: #2196F3;
-        color: white;
-        align-self: flex-end;
-        margin-left: auto;
-    }
+        .user-message {
+            background-color: #2196F3;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
 
-    .bot-message {
-        background-color: white;
-        color: black;
-        align-self: flex-start;
-    }
+        .bot-message {
+            background-color: white;
+            color: black;
+            align-self: flex-start;
+        }
 
-    .input-container {
-        display: flex;
-        flex-direction: column;
-        margin-top: 10px;
-    }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
 
-    textarea {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        resize: none;
-        overflow: hidden;
-    }
+        textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            overflow: hidden;
+        }
 
-    button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 10px;
-        cursor: pointer;
-    }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
+    <div id="userEngagementContainerDIV" class="user-container"></div>
 
-<div id="userEngagementContainerDIV" class="user-container"></div>
+    <div id="chatContainerDivID" class="chat-container">
+        <div id="message-container"></div>
+    </div>
 
-<div id="chatContainerDivID" class="chat-container">
-    <div id="message-container" </div>
-</div>
+    <div class="container">
+        <textarea id="messageInput" placeholder="Type your message..."></textarea>
+        <div class="button-container">
+            <button id="talkButton">Talk</button>
+            <button id="sendButton" onClick="sendMessage()">Send</button>
+        </div>
+    </div>
 
-
- <div class="container">  
-	<textarea "placeholder="Type your message..."/>
-	<div class="button-container">
-    	<button id="talkButton"> </button>
-		<button 
-			id="sendButton"  onClick={sendMessage} > 
-		</button>
-	</div>
-</div>
-
-
-
-<div class="button-container">
-    <button id="muteButton">Mute</button>
-    <button id="speakerButton">Speaker</button>
-    <select id="languageDropdown"></select>
-</div>
-
+    <div class="button-container">
+        <button id="muteButton">Mute</button>
+        <button id="speakerButton">Speaker</button>
+        <select id="languageDropdown"></select>
+    </div>
 </body>
 
 </html>
