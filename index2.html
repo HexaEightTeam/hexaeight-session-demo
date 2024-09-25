@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HexaEight Chat Integration</title>
-    <link rel="stylesheet" href="chatui.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
     <script src="https://cdn.jsdelivr.net/npm/pouchdb/dist/pouchdb.min.js"></script>
     <script type="module">
-        import HexaEight from './hexaeightsession.mjs';
-        import { HexaEightChat } from './hexaeightAIchat.mjs';
+        import HexaEight from './hexaeight-sessions/hexaeightsession.mjs';
+        import { HexaEightChat } from './hexaeight-sessions/hexaeightAIchat.mjs';
 
         const session = new HexaEight();
         const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04"; // Replace with your actual client ID
@@ -61,14 +61,15 @@
 <div id="userEngagementContainerDIV" class="user-container"></div>
 
 <div id="chatContainerDivID" class="chat-container">
-    <div id="message-container"></div>
+    <div id="message-container" class="message-container"></div>
 </div>
 
 <div class="container">
-    <textarea id="messageInput" placeholder="Type your message..."></textarea>
-    <div class="button-container">
-        <button id="talkButton">Talk</button>
-        <button id="sendButton" onclick="sendMessage()">Send Message</button>
+    <div class="input-container">
+        <textarea id="messageInput" placeholder="Type your message..." rows="3"></textarea>
+        <div class="input-wrapper">
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
     </div>
 </div>
 
@@ -80,3 +81,6 @@
 
 </body>
 </html>
+
+
+
