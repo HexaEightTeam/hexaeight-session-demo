@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Widget Integration</title>
+    <script type="module" src="./ChatWidget.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        #openChatButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="openChatButton">Open Chat</button>
+
+    <script type="module">
+        const clientId = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04"; // Replace with your actual client ID
+        const tokenServerUrl = "https://auth2.hexaeight.com:2083"; // Replace with your actual token server URL
+        const preferredLanguage = "en-US"; // Set your preferred language
+
+        const chatWidget = new ChatWidget(clientId, tokenServerUrl, preferredLanguage);
+
+        document.getElementById('openChatButton').onclick = async () => {
+            await chatWidget.initialize();
+            chatWidget.openModal();
+        }
+    </script>
+</body>
+</html>
