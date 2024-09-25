@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HexaEight Chat with GPT</title>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/hexaeightteam/session-js-spa-https/hexaeightsession.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .button-container {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HexaEight Chat with GPT</h1>
+        
+        <!-- User Engagement Container -->
+        <div id="userEngagementContainerDIV" class="user-container"></div>
+
+        <!-- Chat Container -->
+        <div id="chatContainerDivID" class="chat-container">
+            <div id="message-container"></div>
+        </div>
+
+        <!-- Input and Buttons -->
+        <div class="container">
+            <textarea id="messageText" placeholder="Type your message..."></textarea>
+            <div class="button-container">
+                <button id="talkButton">Talk</button>
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+
+        <!-- Mute and Language Selection -->
+        <div class="button-container">
+            <button id="muteButton">Mute</button>
+            <button id="speakerButton">Speaker</button>
+            <select id="languageDropdown">
+                <option value="en-US">English</option>
+                <option value="es-ES">Spanish</option>
+                <!-- Add other languages as needed -->
+            </select>
+        </div>
+    </div>
+
+    <script type="module">
+        import HexaEight from 'https://cdn.jsdelivr.net/gh/hexaeightteam/session-js-spa-https/hexaeightsession.js';
+        import HexaEightChat from 'https://cdn.jsdelivr.net/gh/hexaeightteam/session-js-spa-https/hexaeightAIchat.mjs';
+        
+        const session = new HexaEight();
+        const clientid = "FD836DD6C58AD0AC762455B3221408B1FDE1FE04";
+        const tokenserverurl = "https://auth2.hexaeight.com:2083";
+
+        // UI Elements
+        const sendButton = document.querySelector("#sendButton");
+        const messageText = document.querySelector("#messageText");
+        const languageDropdown = document.querySelector("#languageDropdown");
+
+        // Initialize HexaEight session
+        session.init(clientid, tokenserverurl, "userEngagementContainerDIV");
+
+        // Wait for session to be ready
+        async function initializeSession() {
+            const initialized = await session.ready();
+            console.log("Session is initialized:", initialized);
+
+            if (initialized === "fulfilled") {
+                HexaEightChat.init({
+                    chatContainerId: "chatContainerDivID",
+                    session: session,
+                    messageCallback: async (request, message) => {
+                        try {
+                            const req = await session.DecipherMessage(request);
+                            if (JSON.parse(req).BODY === "RENDER") {
+                                const codeToExecute = JSON.parse(await session.DecipherMessage(message)).BODY;
+                                const asyncFunction = new Function(`(async () => { ${codeToExecute} })();`);
+                                asyncFunction();
+                            }
+                        } catch (error) {
+                            console.log("Error in messageCallback:", error);
+                        }
+                        console.log("New message:", message);
+                        console.log("New request:", request);
+                    }
+                });
+            }
+        }
+
+        // Set Preferred Language
+        HexaEightChat.setPreferredLanguage("en-US", languageDropdown);
+
+        // Send message on button click
+        sendButton.addEventListener("click", async () => {
+            const userMessage = messageText.value;
+            if (userMessage.trim() !== "") {
+                await session.EngageAI(userMessage);
+                messageText.value = "";  // Clear the input
+            }
+        });
+
+        // Initialize session when ready
+        initializeSession();
+    </script>
+</body>
+</html>
