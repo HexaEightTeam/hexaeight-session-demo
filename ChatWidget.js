@@ -19,7 +19,7 @@ class ChatWidget {
                     <div id="message-container"></div>
                     <div class="input-container">
                         <textarea id="messageInput" placeholder="Type your message..."></textarea>
-                        <button id="sendButton" onClick="sendMessage()">Send</button>
+                        <button id="sendButton">Send</button>
                     </div>
                     <div class="button-container">
                         <button id="talkButton">Talk</button>
@@ -33,6 +33,12 @@ class ChatWidget {
         document.body.appendChild(this.modal);
         this.setupStyles();
         this.setupCloseButton();
+        this.setupSendButton();
+    }
+
+    setupSendButton() {
+        const sendButton = this.modal.querySelector('#sendButton');
+        sendButton.onclick = () => this.sendMessage();
     }
 
     setupStyles() {
@@ -175,9 +181,12 @@ class ChatWidget {
         });
     }
 
-    async sendMessage(messageText) {
+    async sendMessage() {
+        const messageInput = document.getElementById("messageInput");
+        const messageText = messageInput.value;
         if (messageText !== "") {
             await this.session.EngageAI(messageText);
+            messageInput.value = ""; // Clear the input after sending the message
         }
     }
 }
